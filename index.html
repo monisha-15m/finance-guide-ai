@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FinanceGuide</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{min-height:100vh;font-family:Arial,sans-serif;background:radial-gradient(circle at top left,#243b70,#101522 48%,#090c13);color:#fff;display:flex;align-items:center;justify-content:center;padding:22px}
+.app{width:min(900px,100%);height:min(720px,94vh);display:flex;flex-direction:column;overflow:hidden;border:1px solid #ffffff22;border-radius:28px;background:#111622dd;backdrop-filter:blur(18px);box-shadow:0 30px 90px #0008}
+header{padding:22px 25px;display:flex;align-items:center;gap:15px;border-bottom:1px solid #ffffff1a}
+.logo{width:48px;height:48px;display:grid;place-items:center;border-radius:16px;background:linear-gradient(135deg,#7c5cff,#35d6ff);font-size:23px}
+header h1{font-size:20px} header p{margin-top:4px;color:#aeb8ca;font-size:13px}
+#chat{flex:1;overflow-y:auto;padding:25px;display:flex;flex-direction:column;gap:15px}
+.message{max-width:78%;padding:14px 17px;border-radius:18px;line-height:1.55;white-space:pre-wrap}
+.bot{align-self:flex-start;background:#20283a;border-bottom-left-radius:6px}
+.user{align-self:flex-end;background:linear-gradient(135deg,#6551ee,#367eea);border-bottom-right-radius:6px}
+.composer{padding:18px;border-top:1px solid #ffffff1a;display:flex;gap:10px}
+textarea{flex:1;resize:none;height:54px;border:1px solid #ffffff20;outline:none;border-radius:16px;padding:15px;color:#fff;background:#111725;font:inherit}
+button{width:58px;border:0;border-radius:16px;cursor:pointer;color:#fff;background:linear-gradient(135deg,#7c5cff,#35aeea);font-size:20px}
+button:disabled{opacity:.5;cursor:not-allowed}
+@media(max-width:600px){.app{height:92vh;border-radius:20px}.message{max-width:88%}}
+</style>
+</head>
+<body>
+<div class="app">
+<header><div class="logo">✦</div><div><h1>FinanceGuide</h1><p>Basic Personal Finance Education • Gemini AI Assistant</p></div></header>
+<main id="chat"><div class="message bot">Hello! I am FinanceGuide. Ask me anything about Basic Personal Finance Education.</div></main>
+<form class="composer" id="chatForm"><textarea id="message" placeholder="Type your question..." required></textarea><button id="send" type="submit">➤</button></form>
+</div>
+<script>
+const form=document.getElementById("chatForm"),input=document.getElementById("message"),chat=document.getElementById("chat"),send=document.getElementById("send");
+function addMessage(text,type){const d=document.createElement("div");d.className="message "+type;d.textContent=text;chat.appendChild(d);chat.scrollTop=chat.scrollHeight}
+form.addEventListener("submit",async e=>{e.preventDefault();const message=input.value.trim();if(!message)return;addMessage(message,"user");input.value="";send.disabled=true;try{const r=await fetch("/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({message})});const d=await r.json();addMessage(d.reply||"No response received.","bot")}catch(e){addMessage("Sorry, something went wrong. Please try again.","bot")}finally{send.disabled=false;input.focus()}});
+</script>
+</body>
+</html>
